@@ -1,4 +1,4 @@
-# SneshBot Commands 
+![](assets/senshawigglefast.gif) # SneshBot Commands ![](assets/senshawigglefast.gif)
 
 Please note that I use @ username and UserID interchangeably since I have included a parser that will deal with both in all the commands. If you don't know how to get UserID for a user, I suggest you familiarize yourself with it by reading: <https://support.discord.com/hc/en-us/articles/206346498-Where-can-I-find-my-User-Server-Message-ID>. 
 
