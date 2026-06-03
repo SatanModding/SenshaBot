@@ -1,3 +1,4 @@
 bleach
 discord
 dateparser
+pandas

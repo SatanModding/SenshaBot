@@ -28,8 +28,6 @@ class ReadyEvent(EventHandler):
         # Register some tasks
         self.client.loop.create_task(check_punishments(self.client))
 
-        # Sync slash commands with Discord
-        await self.client.tree.sync()
 
 
 

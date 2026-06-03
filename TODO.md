@@ -1,5 +1,6 @@
 ### Todo
 
+API:  https://discordpy-redfork.readthedocs.io/en/latest/api.html#discord.RawReactionActionEvent
 
 Clarification command - verbal 
 
@@ -16,4 +17,6 @@ Random Satan idea: Birthday bot: first message they post on their birthday is re
 Maybe remove l'heure because timezones 
 
 remind me 
+
+Fix no newlines in bot messages 
 

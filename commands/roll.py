@@ -56,6 +56,9 @@ class RollCommand(Command):
         elif user_id == 219060288106921985:
             roll = 20
             response = f"{self.get_custom_emoji('pogcat')} Critical success! You dropped this Snesh: {self.get_custom_emoji('crown')}"
+        elif user_id == 722476157714563073:
+            roll = 1
+            response = f"{self.get_custom_emoji('satanstarege')} you rolled a 1, loser!"
         else:
             # Every 10th roll, force a 1 or 20
             if self.roll_counter % 10 == 0:

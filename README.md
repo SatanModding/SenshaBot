@@ -1,3 +1,3 @@
 # Modular Discord Moderation Bot
 
-Need to write new READ-ME. 
+Fork of senshabot https://github.com/senshastic/SenshaBot#
