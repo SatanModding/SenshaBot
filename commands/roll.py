@@ -62,39 +62,45 @@ class RollCommand(Command):
         rollParams = args[0].lower() if args and args[0] else None
 
         if rollParams:
-            match = re.fullmatch(r"(\d+)d(\d+)", rollParams)
+            if rollParams == "coin":
+                roll = random.randint(1,2)
+                if roll == 1:
+                    roll = "Head"
+                else:
+                    roll = "Tail"
+            else:   
+                match = re.fullmatch(r"(\d+)d(\d+)", rollParams)
 
-            if not match:
-                await message.channel.send("Use XdY Format! (2d6, 1d20)")
-                return
+                if not match:
+                    await message.channel.send("Use XdY Format! (2d6, 1d20)")
+                    return
 
-            num_dice = int(match.group(1))
-            dice_size = int(match.group(2))
+                num_dice = int(match.group(1))
+                dice_size = int(match.group(2))
 
-            if num_dice == 0 and dice_size == 0:
-                await message.channel.send("Why are you making me do this?")
-                return
-            if num_dice == 0:
-                await message.channel.send("Just.. why?")
-                return
-            if num_dice < 0:
-                await message.channel.send("Are you trying make reality collapse into itself, rolling negative amount of dice?!")
-                return
-            elif num_dice > 100:
-                await message.channel.send("These are far too many dice you are trying to roll here, 100 at maximum should suffice!")
-                return
-            elif dice_size <= 0:
-                await message.channel.send("I don't know what you are rolling but its not dice.")
-                return
-            elif dice_size == 1:
-                await message.channel.send("Might as well just count how many dice you have.")
-                return
-            elif dice_size > 1000:
-                await message.channel.send("Anything above 1000 sides are far too much. Those are real chonkers, some real badonkas!")
-                return
-            
-            roll = self.custom_roll(num_dice, dice_size)
-
+                if num_dice == 0 and dice_size == 0:
+                    await message.channel.send("Why are you making me do this?")
+                    return
+                if num_dice == 0:
+                    await message.channel.send("Just.. why?")
+                    return
+                if num_dice < 0:
+                    await message.channel.send("Are you trying make reality collapse into itself, rolling negative amount of dice?!")
+                    return
+                elif num_dice > 100:
+                    await message.channel.send("These are far too many dice you are trying to roll here, 100 at maximum should suffice!")
+                    return
+                elif dice_size <= 0:
+                    await message.channel.send("I don't know what you are rolling but its not dice.")
+                    return
+                elif dice_size == 1:
+                    await message.channel.send("Might as well just count how many dice you have.")
+                    return
+                elif dice_size > 1000:
+                    await message.channel.send("Anything above 1000 sides are far too much. Those are real chonkers, some real badonkas!")
+                    return
+                
+                roll = self.custom_roll(num_dice, dice_size)
         else:
             self.roll_counter += 1  # Increment the roll counter
             roll = self.d20_roll()
@@ -116,7 +122,7 @@ class RollCommand(Command):
             roll = 1
             response = f"{self.get_custom_emoji('satanstarege')} you rolled a 1, loser!"
 
-        if not response:
+        if not response and not rollParams == "coin":
             # Get the emotes
             PointNLaugh = self.get_custom_emoji("PointNLaugh")
             pogowo = self.get_custom_emoji("pogowo")
@@ -163,7 +169,10 @@ class RollCommand(Command):
                     response = f"{crown} nice roll, almost had it!"
 
         # Send the final response
-        await message.channel.send(f"You rolled a {roll}!")
+        if rollParams == "coin":
+            await message.channel.send(f"{roll}!")
+        else:
+            await message.channel.send(f"You rolled a {roll}!")
         if response:
             await message.channel.send(response)
 
