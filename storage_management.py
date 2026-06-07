@@ -2,6 +2,7 @@ import json
 import os
 
 from typing import Union
+from helpers.response_management import default_response_store
 
 
 class JsonFileManager:
@@ -80,6 +81,7 @@ class StorageManagement(JsonFileManager):
             "muted_users": {},
             "warned_users": {},
             "banned_users": {},
+            "responses": default_response_store(),
         }
         await self.write_file_to_disk()
         await self.load()
