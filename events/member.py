@@ -16,8 +16,12 @@ class MemberJoinEvent(EventHandler):
         self.event = "on_member_join"
 
     async def handle(self, member: discord.abc.User, *args, **kwargs) -> None:
-
         guild = member.guild
+        if self.storage.settings is None:
+            await self.storage.init()
+        if not await self.storage.has_guild(guild.id):
+            await self.client.setup_guild(guild)
+
         guild_id = str(guild.id)
         muted_role_id = int(self.storage.settings["guilds"][guild_id]["muted_role_id"])
         log_channel_id = int(
@@ -67,6 +71,10 @@ class MemberBanEvent(EventHandler):
         self.event = "on_member_ban"
 
     async def handle(self, guild: discord.Guild, *args, **kwargs) -> None:
+        if self.storage.settings is None:
+            await self.storage.init()
+        if not await self.storage.has_guild(guild.id):
+            await self.client.setup_guild(guild)
 
         guild_id = str(guild.id)
         log_channel_id = int(
@@ -112,7 +120,12 @@ class MemberKickEvent(EventHandler):
         self.storage = self.client.storage
         self.event = "on_member_remove"
 
-    async def handle(self, guild: discord.Guild, *args, **kwargs) -> None:
+    async def handle(self, member: discord.Member, *args, **kwargs) -> None:
+        guild = member.guild
+        if self.storage.settings is None:
+            await self.storage.init()
+        if not await self.storage.has_guild(guild.id):
+            await self.client.setup_guild(guild)
 
         guild_id = str(guild.id)
         log_channel_id = int(
