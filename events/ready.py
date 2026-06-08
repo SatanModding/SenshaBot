@@ -5,6 +5,7 @@ from tasks.check_punishments import check_punishments
 
 from events.base import EventHandler
 from bot import ModerationBot
+from helpers.emoji_parser import refresh_application_emojis
 
 
 class ReadyEvent(EventHandler):
@@ -24,6 +25,8 @@ class ReadyEvent(EventHandler):
 
         for guild in self.client.guilds:
             await self.client.setup_guild(guild)
+
+        await refresh_application_emojis(self.client)
 
         # Register some tasks
         self.client.loop.create_task(check_punishments(self.client))

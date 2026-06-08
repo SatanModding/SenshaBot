@@ -7,7 +7,7 @@ import discord
 
 from bot import ModerationBot
 from commands.base import Command
-from helpers.emoji_parser import parse_emotes_with_status
+from helpers.emoji_parser import parse_emotes_with_status_async
 from helpers.misc_functions import author_is_admin, author_is_mod, is_integer
 from helpers.response_management import (
     add_response,
@@ -340,9 +340,14 @@ class ResponseCommand(Command):
             "created_by": message.author.name,
         }
 
+        preview_embed = await self.make_response_preview_embed(
+            message.guild,
+            response_store,
+            response_def,
+        )
         save_choice = await self.ask_pick(
             message,
-            self.make_response_preview_embed(message.guild, response_store, response_def),
+            preview_embed,
             [
                 ("Save", "save", discord.ButtonStyle.success),
                 ("Cancel", "cancel", discord.ButtonStyle.danger),
@@ -463,9 +468,12 @@ class ResponseCommand(Command):
             await message.channel.send(self.invalid_response)
             return
 
-        await message.channel.send(
-            embed=self.make_response_view_embed(message.guild, response_store, response_def)
+        view_embed = await self.make_response_view_embed(
+            message.guild,
+            response_store,
+            response_def,
         )
+        await message.channel.send(embed=view_embed)
 
     async def handle_toggle(self, message: discord.Message, response_id: int) -> None:
         response_def = await toggle_response(self.storage, message.guild.id, response_id)
@@ -689,9 +697,14 @@ class ResponseCommand(Command):
         edited_response = response_def.copy()
         edited_response.update(updates)
 
+        preview_embed = await self.make_response_preview_embed(
+            message.guild,
+            response_store,
+            edited_response,
+        )
         choice = await self.ask_pick(
             message,
-            self.make_response_preview_embed(message.guild, response_store, edited_response),
+            preview_embed,
             [
                 ("Save", "save", discord.ButtonStyle.success),
                 ("Cancel", "cancel", discord.ButtonStyle.danger),
@@ -1273,12 +1286,12 @@ class ResponseCommand(Command):
             return "Use setup"
         return str(value)
 
-    def get_response_text_preview(
+    async def get_response_text_preview(
         self,
         guild: discord.Guild,
         response_text: str,
     ) -> tuple[str, list[str]]:
-        parsed_text, missing_emojis = parse_emotes_with_status(
+        parsed_text, missing_emojis = await parse_emotes_with_status_async(
             response_text,
             self.client,
             guild,
@@ -1442,13 +1455,13 @@ class ResponseCommand(Command):
         )
         return embed
 
-    def make_response_preview_embed(
+    async def make_response_preview_embed(
         self,
         guild: discord.Guild,
         response_store: dict,
         response_def: dict,
     ) -> discord.Embed:
-        parsed_response_text, missing_emojis = self.get_response_text_preview(
+        parsed_response_text, missing_emojis = await self.get_response_text_preview(
             guild,
             response_def["response_text"],
         )
@@ -1528,13 +1541,13 @@ class ResponseCommand(Command):
         )
         return embed
 
-    def make_response_view_embed(
+    async def make_response_view_embed(
         self,
         guild: discord.Guild,
         response_store: dict,
         response_def: dict,
     ) -> discord.Embed:
-        parsed_response_text, missing_emojis = self.get_response_text_preview(
+        parsed_response_text, missing_emojis = await self.get_response_text_preview(
             guild,
             response_def["response_text"],
         )

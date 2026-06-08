@@ -6,7 +6,7 @@ import discord
 
 from bot import ModerationBot
 from events.base import EventHandler
-from helpers.emoji_parser import parse_emotes
+from helpers.emoji_parser import parse_emotes_async
 from helpers.misc_functions import author_is_admin, author_is_mod
 from helpers.response_management import (
     get_effective_setting,
@@ -62,7 +62,7 @@ class AutoResponseEvent(EventHandler):
             if not message_matches_response(message.content, response_def):
                 continue
 
-            response_text = parse_emotes(
+            response_text = await parse_emotes_async(
                 response_def["response_text"],
                 self.client,
                 message.guild,
