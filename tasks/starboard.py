@@ -13,7 +13,7 @@ class Starboard():
         self.client = client_instance
         self.storage = client_instance.storage
         # change this to 1394634902598713354 (#pin-overflow)  1511613516438704169 testing
-        self.starboard_channel_id = 1394634902598713354
+        self.starboard_channel_id = 1511613516438704169
 
     # duplicate function from roll.py for testing -> fix
     def get_custom_emoji(self, name):
@@ -116,13 +116,12 @@ class Starboard():
         # 4. final message
         await channel.send(embed=embed)
 
-# TODO - blacklist locked channels (moderation,admin etc)
 # TODO - fix rate limitation error
 
     # is fired when event reactions detects a reaction
     async def on_reaction(self, payload):
         coin_name = "CMTYcoin"
-        threshold = 3
+        threshold = 1
         coin = self.get_custom_emoji("CMTYcoin")
         og_channel = self.client.get_channel(payload.channel_id)
         message_id = payload.message_id
@@ -133,6 +132,25 @@ class Starboard():
         guild_id = str(payload.guild_id)
         guild = self.storage.settings["guilds"][guild_id]
         already_posted = guild.setdefault("starboarded_messages", {})
+
+        # only allow starboard usage in modding channels
+        allowed_channels = [
+            "modders-general",
+            "toolkit-general",
+            "modding-statdata",
+            "modding-ui",
+            "modding-visual",
+            "modding-npcs-dialog",
+            "modding-mapping",
+            "modding-khn-osi",
+            "modding-audio",
+            "norb-scripting",
+            "🤖senshabot_fork_tests"
+        ]
+
+        if message.channel.name not in allowed_channels:
+            print(f'{message.channel.name} is not in allowed channels')
+            return
 
         # If message has already been posted - ignore
         if message_id in already_posted:
