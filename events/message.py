@@ -6,10 +6,13 @@ import sys
 import bleach
 import discord
 
+import helpers.uuid_handle as uuid_handle
 from bot import ModerationBot
 from events.base import EventHandler
+from events.slur_checker import SlurChecker
 from helpers.embed_builder import EmbedBuilder
 from helpers.misc_functions import author_is_mod
+from helpers.uuid_handle import DataType
 
 
 class MessageEvent(EventHandler):
@@ -19,6 +22,7 @@ class MessageEvent(EventHandler):
         self.event = "on_message"
         self.chain_length = 5  # Define the minimum length of the chain
         self.emoji_chain_file = "emoji_chain.json"  # JSON file to store emoji chains
+        self.uuid_handle = (uuid_handle.uuid_utils(), uuid_handle.handle_utils())
 
         # Initialize the emoji chain file if it doesn't exist
         try:
@@ -76,13 +80,19 @@ class MessageEvent(EventHandler):
             guild_id = str(message.guild.id)
             channel_id = str(message.channel.id)
 
-            uuid_pattern = re.compile(
-                r"(?P<uuid>[A-Ga-g\d]{8}-[A-Ga-g\d]{4}-[A-Ga-g\d]{4}-[A-Ga-g\d]{4}-[A-Ga-g\d]{12})"
-            )
-            m = uuid_pattern.search(message.content)
-            if m:
-                await message.reply(f"uuid poster!!!! {m}", mention_author=False)
-                return
+            sc = SlurChecker()
+            if sc.slur_extractor(message.content):
+                suggestion = str
+                if sc.type == DataType.UUID:
+                    suggestion = self.uuid_handle[sc.type.value].get_uuid()
+                elif sc.type == DataType.HANDLE:
+                    suggestion = self.uuid_handle[sc.type.value].get_handle()
+
+                if suggestion:
+                    await message.reply(
+                        f"oopies, your {sc.type.name.lower()} has a slur in it!\nyou can use this instead: ```{suggestion}```"
+                    )
+                    return
 
             # Initialize the emoji chain for this guild and channel
             self.initialize_chain_for_channel(guild_id, channel_id)
