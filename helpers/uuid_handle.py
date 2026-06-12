@@ -1,6 +1,5 @@
 import re
 import secrets
-import uuid
 from enum import Enum
 
 HANDLE_LENGTH = 36
@@ -12,7 +11,7 @@ HANDLE_CHARS = [
     "e",
     "f",
     "g",
-    '0',
+    "0",
     "1",
     "2",
     "3",
@@ -22,6 +21,13 @@ HANDLE_CHARS = [
     "7",
     "8",
     "9",
+]
+
+DASH_POS = [
+    8,
+    13,
+    18,
+    23,
 ]
 
 
@@ -57,6 +63,15 @@ class uuid_utils:
         )
 
     def get_uuid(self) -> str:
-        # not technically necessary but i like the idea of adding more
-        # randomness into the uuid gen process
-        return str(uuid.uuid5(uuid.uuid4(), secrets.token_hex(64)))
+        self.uuid = ""
+        for _ in range(HANDLE_LENGTH):
+            if len(self.uuid) in DASH_POS:
+                self.uuid += "-"
+            else:
+                c = secrets.randbelow(len(HANDLE_CHARS))
+                self.uuid += HANDLE_CHARS[c]
+
+        while "fag" in self.uuid:
+            self.uuid = self.get_uuid()
+
+        return self.uuid

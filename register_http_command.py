@@ -20,6 +20,6 @@ headers = {"Authorization": f"Bot {token}"}
 print(
     f"sending request with\n    token: {token}\n    url:{url}\n    json: {json}\n    headers: {headers}"
 )
-r = requests.post(url, headers=headers, json=json)
+r = requests.get(url, headers=headers)
 
 print(r, "\n", r.content)

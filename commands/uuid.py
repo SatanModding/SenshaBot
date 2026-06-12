@@ -1,9 +1,7 @@
 import inspect
-import os
 import sys
 
 import discord
-import requests
 
 from bot import ModerationBot
 from commands.base import Command
