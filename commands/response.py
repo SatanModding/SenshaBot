@@ -575,4 +575,4 @@ class ResponseCommand(Command):
         return discord.Embed(title=title, description=description, color=discord.Color.green())
 
 
-classes = inspect.getmembers(sys.modules[__name__], lambda member: inspect.isclass(member) and member.__module__ == __name__)
+classes = [("ResponseCommand", ResponseCommand)]

@@ -25,7 +25,4 @@ class HandleCommand(Command):
         return [handle_command]
 
 
-classes = inspect.getmembers(
-    sys.modules[__name__],
-    lambda member: inspect.isclass(member) and member.__module__ == __name__,
-)
+classes = [("HandleCommand", HandleCommand)]
