@@ -1,19 +1,19 @@
-import bleach
 import inspect
-import sys
-import discord
-import re 
 import json
-
-from bot import ModerationBot
-from helpers.embed_builder import EmbedBuilder
-from events.base import EventHandler
-from helpers.misc_functions import author_is_mod
-
 import re
+import sys
+
 import bleach
 import discord
+
+import helpers.uuid_handle as uuid_handle
+from bot import ModerationBot
 from events.base import EventHandler
+from events.slur_checker import SlurChecker
+from helpers.embed_builder import EmbedBuilder
+from helpers.misc_functions import author_is_mod
+from helpers.uuid_handle import DataType
+
 
 class MessageEvent(EventHandler):
     def __init__(self, client_instance: ModerationBot) -> None:
@@ -22,6 +22,7 @@ class MessageEvent(EventHandler):
         self.event = "on_message"
         self.chain_length = 5  # Define the minimum length of the chain
         self.emoji_chain_file = "emoji_chain.json"  # JSON file to store emoji chains
+        self.uuid_handle = (uuid_handle.uuid_utils(), uuid_handle.handle_utils())
 
         # Initialize the emoji chain file if it doesn't exist
         try:
@@ -44,12 +45,14 @@ class MessageEvent(EventHandler):
 
         # Search the message content for emote patterns or discord emoji/attachment/sticker links, allowing adjacent emotes
         combined_pattern = f"({emote_pattern}|{discord_link_pattern})"
-        
+
         # Find all matches for either emotes or links
         matches = re.findall(combined_pattern, message.content)
 
         # If the number of matches equals the length of the message (implying the entire message is emotes/links), return True
-        return bool(matches) and "".join(match[0] for match in matches) == message.content
+        return (
+            bool(matches) and "".join(match[0] for match in matches) == message.content
+        )
 
     def initialize_chain_for_channel(self, guild_id: str, channel_id: str) -> None:
         """Initialize the emoji chain for a given guild and channel if not already initialized."""
@@ -76,6 +79,15 @@ class MessageEvent(EventHandler):
         if message.guild is not None:
             guild_id = str(message.guild.id)
             channel_id = str(message.channel.id)
+
+            sc = SlurChecker()
+            if sc.slur_extractor(message.content):
+                suggestion = self.uuid_handle[sc.type.value].get()
+
+                await message.reply(
+                    f"oopies, your {sc.type.name.lower()} has a slur in it!\nyou can use this instead: ```{suggestion}```"
+                )
+                return
 
             # Initialize the emoji chain for this guild and channel
             self.initialize_chain_for_channel(guild_id, channel_id)
@@ -110,7 +122,7 @@ class MessageEvent(EventHandler):
 
             if cmd.startswith(self.client.prefix):
                 # Remove the prefix before searching in the expressions.json
-                cmd = cmd[len(self.client.prefix):]
+                cmd = cmd[len(self.client.prefix) :]
 
                 expressions_file = "expressions.json"
 
@@ -128,7 +140,9 @@ class MessageEvent(EventHandler):
                     # Check if the command is mod-only and if the user is a mod
                     if command_data.get("mod_only", False):  # Check if mod_only is True
                         if not await author_is_mod(user, self.storage):
-                            await message.channel.send("**You must be a moderator to use this command.**")
+                            await message.channel.send(
+                                "**You must be a moderator to use this command.**"
+                            )
                             return
 
                     response = command_data["response"]
@@ -160,7 +174,11 @@ class MessageEvent(EventHandler):
                     )
                 else:
                     # Fetch log channel for unknown commands
-                    log_channel_id = int(self.client.storage.settings["guilds"][guild_id]["log_channel_id"])
+                    log_channel_id = int(
+                        self.client.storage.settings["guilds"][guild_id][
+                            "log_channel_id"
+                        ]
+                    )
                     log_channel = message.guild.get_channel(log_channel_id)
 
                     message_link = f"https://discord.com/channels/{message.guild.id}/{message.channel.id}/{message.id}"
@@ -172,7 +190,8 @@ class MessageEvent(EventHandler):
                         )
                     else:
                         await message.channel.send(f"**Unknown command:** `{cmd}`")
-                 
+
+
 # deprecated log function
 """
 class MessageDeleteEvent(EventHandler):
