@@ -3,6 +3,8 @@ expressions.json
 emoji_chain.json
 reminders.json
 token.txt
+.idea/
+.vscode/
 .venv/*
 **__pycache__/
 *.code-workspace

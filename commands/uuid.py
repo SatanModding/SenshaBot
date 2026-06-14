@@ -1,25 +1,26 @@
 import inspect
 import sys
+import uuid
 
 import discord
+from discord import app_commands
+from helpers.uuid_handle import uuid_utils
 
 from bot import ModerationBot
 from commands.base import Command
-from helpers.uuid_handle import uuid_utils
 
 
-class UUIDCommand(Command):
+class UuidCommand(Command):
     def __init__(self, client_instance: ModerationBot) -> None:
-        self.cmd = "uuid"
         self.client = client_instance
-        self.storage = client_instance.storage
+        self.cmd = None
 
-    async def execute(self, message: discord.Message, **kwargs) -> None:
-        await message.reply(f"your uuid is ```{uuid_utils().get_uuid()}```")
+    def get_slash_commands(self) -> list:
+        @app_commands.command(name="uuid", description="Generate a random UUID.")
+        async def uuid_command(interaction: discord.Interaction) -> None:
+            await interaction.response.send_message(uuid_utils().get_uuid(), ephemeral=True)
+
+        return [uuid_command]
 
 
-# Collects a list of classes in the file
-classes = inspect.getmembers(
-    sys.modules[__name__],
-    lambda member: inspect.isclass(member) and member.__module__ == __name__,
-)
+classes = inspect.getmembers(sys.modules[__name__], lambda member: inspect.isclass(member) and member.__module__ == __name__)

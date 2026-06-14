@@ -1,6 +1,7 @@
 import os
 
 import discord
+from discord import app_commands
 
 from storage_management import StorageManagement
 from helpers.emoji_parser import parse_emotes
@@ -10,10 +11,13 @@ __location__ = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file
 
 class ModerationBot(discord.Client):
     def __init__(self, intents: discord.Intents) -> None:
+        super().__init__(intents=intents)
+
         # Changed to other prefix than "!" to avoid the bots fighting
         self.prefix = "="
         self.prefix_length = len(self.prefix)
         self.storage = StorageManagement()
+        self.tree = app_commands.CommandTree(self)
 
         # Example of adding a custom config file, see below imported class
         # from storage_management import ConfigManagement
@@ -52,8 +56,11 @@ class ModerationBot(discord.Client):
         self.default_permissions = discord.PermissionOverwrite(
             read_messages=False, send_messages=False
         )
-        # Start the discord client
-        discord.Client.__init__(self, intents=intents)
+
+    async def setup_hook(self) -> None:
+        self.registry.register_slash_commands(self.tree)
+        await self.tree.sync()
+        print("Synced slash commands")
 
     async def event_template(self, *args, **kwargs) -> None:
         """The template event function used to replicate event functions dynamically.
