@@ -40,29 +40,29 @@ class DataType(Enum):
 
 class handle_utils:
     def __init__(self) -> None:
-        self.handle = self.get_handle()
+        self.handle = self.get()
         self.handle_pattern = re.compile(r"(?P<handle>[hH][A-Ga-g\d]{36})")
 
-    def get_handle(self) -> str:
+    def get(self) -> str:
         self.handle = "h"
         for _ in range(HANDLE_LENGTH):
             c = secrets.randbelow(len(HANDLE_CHARS))
             self.handle += HANDLE_CHARS[c]
 
         while "fag" in self.handle:
-            self.handle = self.get_handle()
+            self.handle = self.get()
 
         return self.handle
 
 
 class uuid_utils:
     def __init__(self) -> None:
-        self.uuid = self.get_uuid()
+        self.uuid = self.get()
         self.uuid_pattern = re.compile(
             r"(?P<uuid>[A-Ga-g\d]{8}-[A-Ga-g\d]{4}-[A-Ga-g\d]{4}-[A-Ga-g\d]{4}-[A-Ga-g\d]{12})"
         )
 
-    def get_uuid(self) -> str:
+    def get(self) -> str:
         self.uuid = ""
         for _ in range(HANDLE_LENGTH):
             if len(self.uuid) in DASH_POS:
@@ -72,6 +72,6 @@ class uuid_utils:
                 self.uuid += HANDLE_CHARS[c]
 
         while "fag" in self.uuid:
-            self.uuid = self.get_uuid()
+            self.uuid = self.get()
 
         return self.uuid

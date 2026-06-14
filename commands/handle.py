@@ -19,7 +19,7 @@ class HandleCommand(Command):
         @app_commands.command(name="handle", description="Generate a random handle")
         async def handle_command(interaction: discord.Interaction) -> None:
             await interaction.response.send_message(
-                f"your handle is ```{handle_utils().get_handle()}```", ephemeral=True
+                f"your handle is ```{handle_utils().get()}```", ephemeral=True
             )
 
         return [handle_command]

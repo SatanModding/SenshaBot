@@ -82,17 +82,12 @@ class MessageEvent(EventHandler):
 
             sc = SlurChecker()
             if sc.slur_extractor(message.content):
-                suggestion = str
-                if sc.type == DataType.UUID:
-                    suggestion = self.uuid_handle[sc.type.value].get_uuid()
-                elif sc.type == DataType.HANDLE:
-                    suggestion = self.uuid_handle[sc.type.value].get_handle()
+                suggestion = self.uuid_handle[sc.type.value].get()
 
-                if suggestion:
-                    await message.reply(
-                        f"oopies, your {sc.type.name.lower()} has a slur in it!\nyou can use this instead: ```{suggestion}```"
-                    )
-                    return
+                await message.reply(
+                    f"oopies, your {sc.type.name.lower()} has a slur in it!\nyou can use this instead: ```{suggestion}```"
+                )
+                return
 
             # Initialize the emoji chain for this guild and channel
             self.initialize_chain_for_channel(guild_id, channel_id)
