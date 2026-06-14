@@ -12,6 +12,7 @@ from helpers.uuid_handle import handle_utils
 # commandle if youre nasty >:D
 class HandleCommand(Command):
     def __init__(self, client_instance: ModerationBot) -> None:
+        self.cmd = None
         self.client = client_instance
 
     def get_slash_commands(self) -> list:
