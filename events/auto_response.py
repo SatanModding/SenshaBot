@@ -20,7 +20,9 @@ class AutoResponseEvent(EventHandler):
         self.client = client_instance
         self.storage = client_instance.storage
         self.event = "on_message"
-        self.cooldowns = {}
+        if not hasattr(self.client, "auto_response_cooldowns"):
+            self.client.auto_response_cooldowns = {}
+        self.cooldowns = self.client.auto_response_cooldowns
 
     async def handle(self, message: discord.Message, *args, **kwargs) -> None:
         if message.author.bot or message.guild is None or not message.content:

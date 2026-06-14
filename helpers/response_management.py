@@ -48,6 +48,10 @@ def normalize_bool_override(value):
 
 async def get_or_setup_responses(storage, guild_id: str) -> dict:
     guild_id = str(guild_id)
+    if storage.settings is None:
+        await storage.init()
+    if guild_id not in storage.settings["guilds"]:
+        await storage.add_guild(guild_id)
     guild = storage.settings["guilds"][guild_id]
     responses = guild.get("responses")
     override_keys = (

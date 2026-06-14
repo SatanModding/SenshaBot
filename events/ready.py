@@ -1,6 +1,8 @@
 import inspect
 import sys
 
+import discord
+
 from tasks.check_punishments import check_punishments
 
 from events.base import EventHandler
@@ -25,6 +27,20 @@ class ReadyEvent(EventHandler):
 
         for guild in self.client.guilds:
             await self.client.setup_guild(guild)
+
+        if not self.client.slash_guild_sync_done:
+            for guild in self.client.guilds:
+                guild_object = discord.Object(id=guild.id)
+                self.client.tree.clear_commands(guild=guild_object)
+                for slash_command in self.client.slash_commands:
+                    self.client.tree.add_command(
+                        slash_command,
+                        guild=guild_object,
+                        override=True,
+                    )
+                await self.client.tree.sync(guild=guild_object)
+                print(f"Synced slash commands to guild {guild.name} ({guild.id})")
+            self.client.slash_guild_sync_done = True
 
         await refresh_application_emojis(self.client)
 
