@@ -149,7 +149,7 @@ class Starboard():
         ]
 
         if message.channel.name not in allowed_channels:
-            print(f'{message.channel.name} is not in allowed channels')
+            #print(f'{message.channel.name} is not in allowed channels')
             return
 
         # If message has already been posted - ignore
