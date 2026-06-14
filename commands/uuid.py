@@ -9,7 +9,7 @@ from commands.base import Command
 from helpers.uuid_handle import uuid_utils
 
 
-class UuidCommand(Command):
+class UUIDCommand(Command):
     def __init__(self, client_instance: ModerationBot) -> None:
         self.cmd = None
         self.client = client_instance
