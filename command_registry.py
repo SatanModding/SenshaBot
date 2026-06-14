@@ -15,6 +15,7 @@ class CommandRegistry:
     new_py_files = []
     modules = []
     module_changes = False
+    command_instances = []
 
     def __init__(self) -> None:
         print(
@@ -70,6 +71,7 @@ class CommandRegistry:
         print("Registering commands...")
         # Clear commands storage
         self.commands.clear()
+        self.command_instances = []
         # Unload all command modules
         self.modules = [str(m) for m in sys.modules if m.startswith("commands.")]
         for module in self.modules:
@@ -87,14 +89,25 @@ class CommandRegistry:
             for name, class_info in classes.items():
                 # Check if the command class is a subclass of the base command
                 if issubclass(class_info, Command):
-                    clazz = class_info(self.instance)
-                    clazz.register_self()
+                    command_instance = class_info(self.instance)
+                    self.command_instances.append(command_instance)
+                    if command_instance.cmd is not None:
+                        command_instance.register_self()
                 else:
                     print(
                         "Command class: {} in file: {} is not a subclass of the base command class. Please fix this (see repository for details)!".format(
                             name, command_file
                         )
                     )
+
+    def register_slash_commands(self, tree) -> None:
+        tree.clear_commands(guild=None)
+        for command_instance in self.command_instances:
+            get_slash_commands = getattr(command_instance, "get_slash_commands", None)
+            if not callable(get_slash_commands):
+                continue
+            for slash_command in get_slash_commands():
+                tree.add_command(slash_command, override=True)
 
     async def reload_commands(self) -> None:
         """Gets the changed python files list and reloads the commands if there are changes"""
