@@ -18,6 +18,8 @@ class ModerationBot(discord.Client):
         self.prefix_length = len(self.prefix)
         self.storage = StorageManagement()
         self.tree = app_commands.CommandTree(self)
+        self.slash_commands = []
+        self.slash_guild_sync_done = False
 
         # Example of adding a custom config file, see below imported class
         # from storage_management import ConfigManagement
@@ -58,9 +60,12 @@ class ModerationBot(discord.Client):
         )
 
     async def setup_hook(self) -> None:
+        await self.storage.init()
         self.registry.register_slash_commands(self.tree)
+        self.slash_commands = list(self.tree.get_commands())
+        self.tree.clear_commands(guild=None)
         await self.tree.sync()
-        print("Synced slash commands")
+        print("Cleared global slash commands")
 
     async def event_template(self, *args, **kwargs) -> None:
         """The template event function used to replicate event functions dynamically.
