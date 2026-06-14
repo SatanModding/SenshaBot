@@ -2,4 +2,3 @@ bleach
 discord
 dateparser
 pandas
-requests
