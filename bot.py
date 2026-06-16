@@ -63,6 +63,10 @@ class ModerationBot(discord.Client):
         await self.storage.init()
         self.registry.register_slash_commands(self.tree)
         self.slash_commands = list(self.tree.get_commands())
+        print(
+            "Please wait until slash commands are properly loaded. The bot is being initialized with the following slash commands: "
+            + ", ".join(command.name for command in self.slash_commands)
+        )
         self.tree.clear_commands(guild=None)
         await self.tree.sync()
         print("Cleared global slash commands")
