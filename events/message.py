@@ -9,11 +9,11 @@ import discord
 import helpers.uuid_handle as uuid_handle
 from bot import ModerationBot
 from events.base import EventHandler
-from helpers.uuid_handle_slur_parser import UUIDHandleSlurParser
 from helpers.embed_builder import EmbedBuilder
 from helpers.misc_functions import author_is_mod
 from helpers.slurs import slurs
 from helpers.uuid_handle import DataType
+from helpers.uuid_handle_slur_parser import UUIDHandleSlurParser
 
 
 class MessageEvent(EventHandler):
