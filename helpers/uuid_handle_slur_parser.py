@@ -1,8 +1,8 @@
-from helpers.uuid_handle import handle_utils, uuid_utils, DataType
 from helpers.slurs import slurs
+from helpers.uuid_handle import DataType, handle_utils, uuid_utils
 
 
-class UUIDHandleSlurChecker:
+class UUIDHandleSlurParser:
     def __init__(self):
         self.type: DataType = DataType.NONE
         self.msg: str = ""
@@ -34,5 +34,5 @@ class UUIDHandleSlurChecker:
 
         if slurs().check(extracted):
             return extracted
-            
+
         return None

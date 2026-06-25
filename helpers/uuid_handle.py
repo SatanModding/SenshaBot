@@ -1,6 +1,7 @@
 import re
 import secrets
 from enum import Enum
+
 from helpers.slurs import slurs
 
 HANDLE_LENGTH = 36
@@ -46,7 +47,7 @@ class handle_utils:
 
     def get(self) -> str:
         self.handle = "h"
-        
+
         for _ in range(HANDLE_LENGTH):
             c = secrets.randbelow(len(HANDLE_CHARS))
             self.handle += HANDLE_CHARS[c]
@@ -66,7 +67,6 @@ class uuid_utils:
 
     def get(self) -> str:
         self.uuid = ""
-        
         for _ in range(HANDLE_LENGTH):
             if len(self.uuid) in DASH_POS:
                 self.uuid += "-"

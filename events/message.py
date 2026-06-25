@@ -9,7 +9,7 @@ import discord
 import helpers.uuid_handle as uuid_handle
 from bot import ModerationBot
 from events.base import EventHandler
-from helpers.uuid_handle_slur_parser import UUIDHandleSlurChecker
+from helpers.uuid_handle_slur_parser import UUIDHandleSlurParser
 from helpers.embed_builder import EmbedBuilder
 from helpers.misc_functions import author_is_mod
 from helpers.slurs import slurs
@@ -81,7 +81,7 @@ class MessageEvent(EventHandler):
             guild_id = str(message.guild.id)
             channel_id = str(message.channel.id)
 
-            sc = UUIDHandleSlurChecker()
+            sc = UUIDHandleSlurParser()
             if sc.uuidhandle_extractor(message.content):
                 suggestion = self.uuid_handle[sc.type.value].get()
 
