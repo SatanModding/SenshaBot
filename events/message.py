@@ -9,9 +9,10 @@ import discord
 import helpers.uuid_handle as uuid_handle
 from bot import ModerationBot
 from events.base import EventHandler
-from events.slur_checker import SlurChecker
+from helpers.uuid_handle_slur_parser import UUIDHandleSlurChecker
 from helpers.embed_builder import EmbedBuilder
 from helpers.misc_functions import author_is_mod
+from helpers.slurs import slurs
 from helpers.uuid_handle import DataType
 
 
@@ -80,13 +81,17 @@ class MessageEvent(EventHandler):
             guild_id = str(message.guild.id)
             channel_id = str(message.channel.id)
 
-            sc = SlurChecker()
-            if sc.slur_extractor(message.content):
+            sc = UUIDHandleSlurChecker()
+            if sc.uuidhandle_extractor(message.content):
                 suggestion = self.uuid_handle[sc.type.value].get()
 
                 await message.reply(
                     f"oopies, your {sc.type.name.lower()} has a slur in it!\nyou can use this instead: ```{suggestion}```"
                 )
+                return
+
+            if slurs(["cunt"]).check(message.content):
+                await message.reply("oi mate you better hope youre australian!!!")
                 return
 
             # Initialize the emoji chain for this guild and channel
