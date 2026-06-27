@@ -5,6 +5,7 @@ from discord import app_commands
 
 from bot import ModerationBot
 from commands.base import Command
+from helpers.emoji_parser import parse_emotes
 from helpers.uuid_handle import uuid_utils
 
 
@@ -20,7 +21,7 @@ class UUIDCommand(Command):
             # that way its always plural and grammar wont need to change
             fake_uuid_limit = secrets.randbelow(19) + 2
             await interaction.response.send_message(
-                f"your uuid is ```{uuid_utils().get()}```\nyou have {fake_uuid_limit} uuids left. use them wisely...",
+                f"Your UUID is: ```{uuid_utils().get()}```\nYou have {fake_uuid_limit} UUIDs left. Use them wisely...",
                 ephemeral=True,
             )
 
