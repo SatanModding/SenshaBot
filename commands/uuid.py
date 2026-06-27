@@ -18,7 +18,7 @@ class UUIDCommand(Command):
         @app_commands.command(name="uuid", description="Generate a random UUID.")
         async def uuid_command(interaction: discord.Interaction) -> None:
             await interaction.response.send_message(
-                f"your uuid is ```{uuid_utils().get()}```", ephemeral=True
+                f"your uuid is ```{uuid_utils().get()}```\nyou have `NaN` uuids left. use them wisely...", ephemeral=True
             )
 
         return [uuid_command]
