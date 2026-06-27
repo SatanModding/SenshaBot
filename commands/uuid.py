@@ -1,11 +1,11 @@
-import inspect
-import sys
+import secrets
 
 import discord
 from discord import app_commands
 
 from bot import ModerationBot
 from commands.base import Command
+from helpers.emoji_parser import parse_emotes
 from helpers.uuid_handle import uuid_utils
 
 
@@ -17,8 +17,12 @@ class UUIDCommand(Command):
     def get_slash_commands(self) -> list:
         @app_commands.command(name="uuid", description="Generate a random UUID.")
         async def uuid_command(interaction: discord.Interaction) -> None:
+            # always have fake_uuid_limit be at least 2 but as high as 20
+            # that way its always plural and grammar wont need to change
+            fake_uuid_limit = secrets.randbelow(19) + 2
             await interaction.response.send_message(
-                f"your handle is ```{uuid_utils().get()}```", ephemeral=True
+                f"Your UUID is: ```{uuid_utils().get()}```\nYou have {fake_uuid_limit} UUIDs left. Use them wisely...",
+                ephemeral=True,
             )
 
         return [uuid_command]

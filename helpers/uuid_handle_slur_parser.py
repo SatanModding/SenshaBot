@@ -1,7 +1,8 @@
-from helpers.uuid_handle import handle_utils, uuid_utils, DataType
+from helpers.slurs import slurs
+from helpers.uuid_handle import DataType, handle_utils, uuid_utils
 
 
-class SlurChecker:
+class UUIDHandleSlurParser:
     def __init__(self):
         self.type: DataType = DataType.NONE
         self.msg: str = ""
@@ -16,13 +17,10 @@ class SlurChecker:
 
         for msg in msg_list:
             print(f"testing msg: {msg}")
-            self.slur_extractor(msg)
+            self.uuidhandle_extractor(msg)
             print()
 
-    def slur_check(self, msg: str):
-        return "fag" in msg.lower()
-
-    def slur_extractor(self, msg: str):
+    def uuidhandle_extractor(self, msg: str):
         uuid_result = self.uuid_utils.uuid_pattern.search(msg)
         handle_result = self.handle_utils.handle_pattern.search(msg)
 
@@ -34,4 +32,7 @@ class SlurChecker:
             self.type = DataType.HANDLE
             extracted = handle_result.group(self.type.name.lower())
 
-        return extracted
+        if slurs().check(extracted):
+            return extracted
+
+        return None
