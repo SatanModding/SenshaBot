@@ -1,0 +1,12 @@
+[Unit]
+Description=bg3cmty_discord_bot
+After=network.target
+
+[Service]
+Type=simple
+ExecStart=/usr/local/bin/senshabot.sh
+Restart=always
+User=senshabot
+
+[Install]
+WantedBy=multi-user.target
