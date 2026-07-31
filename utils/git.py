@@ -9,7 +9,7 @@ GIT_UPGRADE_CMD = [
 ]
 
 
-def upgrade():
+def upgrade_bot():
     for cmd in GIT_UPGRADE_CMD:
         print(f"running command: git {cmd} {GIT_UPDATE_SRC}\n")
         result = subprocess.run(["git", cmd, GIT_UPDATE_SRC], capture_output=True)
@@ -18,4 +18,4 @@ def upgrade():
         print(text.decode())
 
 
-upgrade()
+upgrade_bot()
