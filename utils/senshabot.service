@@ -4,8 +4,10 @@ After=network.target
 
 [Service]
 Type=simple
-ExecStart=/usr/local/bin/senshabot.sh
+WorkingDirectory=/home/senshabot/host/SenshaBot
+ExecStart=senshabot.sh
 Restart=always
+RestartSec=5
 User=senshabot
 
 [Install]
