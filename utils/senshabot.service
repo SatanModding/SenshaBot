@@ -5,7 +5,7 @@ After=network.target
 [Service]
 Type=simple
 WorkingDirectory=/home/senshabot/host/SenshaBot
-ExecStart=senshabot.sh
+ExecStart=/home/senshabot/host/SenshaBot/senshabot.sh
 Restart=always
 RestartSec=5
 User=senshabot
