@@ -105,6 +105,25 @@ def author_is_admin(author: Member) -> bool:
     return author.guild_permissions.administrator
 
 
+def get_main_bot_user_id(storage: StorageManagement, guild_id: int) -> int | None:
+    """Gets the configured main bot user ID for a guild.
+
+    Args:
+        storage (StorageManagement): Instance of the storage management class
+        guild_id (int): Guild ID to read the setting from
+
+    Returns:
+        int | None: The configured user ID, or None if missing or invalid
+    """
+    guild_settings = storage.settings.get("guilds", {}).get(str(guild_id), {}) if storage.settings else {}
+    raw_user_id = guild_settings.get("main_bot_user_id")
+
+    try:
+        return int(raw_user_id)
+    except (TypeError, ValueError):
+        return None
+
+
 async def author_is_mod(author: Member, storage: StorageManagement) -> bool:
     """Checks if the author is a mod or administrator
 

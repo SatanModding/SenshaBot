@@ -205,6 +205,7 @@ if __name__ == "__main__":
         quit("Please create a token.txt file and place your token in it!")
     intents = discord.Intents.default()
     intents.members = True
+    intents.presences = True
     intents.message_content = True
     # Run the bot instance
     bot = ModerationBot(intents)
