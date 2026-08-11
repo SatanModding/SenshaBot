@@ -7,7 +7,7 @@ import discord
 from bot import ModerationBot
 from events.base import EventHandler
 from helpers.emoji_parser import parse_emotes_async
-from helpers.misc_functions import author_is_admin, author_is_mod
+from helpers.misc_functions import author_is_admin, author_is_mod, get_main_bot_user_id
 from helpers.response_management import (
     get_effective_setting,
     get_or_setup_responses,
@@ -30,6 +30,12 @@ class AutoResponseEvent(EventHandler):
 
         if message.content.startswith(self.client.prefix):
             return
+
+        main_bot_user_id = get_main_bot_user_id(self.storage, message.guild.id)
+        if main_bot_user_id is not None:
+            main_bot_member = message.guild.get_member(main_bot_user_id)
+            if main_bot_member is not None and main_bot_member.status != discord.Status.offline:
+                return
 
         guild_id = str(message.guild.id)
         response_store = await get_or_setup_responses(self.storage, guild_id)
