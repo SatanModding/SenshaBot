@@ -167,11 +167,20 @@ class ModerationBot(discord.Client):
 
     async def create_log_channel(self, guild: discord.Guild) -> None:
         guild_id = str(guild.id)
-        # Get the log channel ID from disk and then try to get it from discord
-        log_channel_id = int(
-            self.storage.settings["guilds"][guild_id]["log_channel_id"]
-        )
-        log_channel = discord.utils.get(guild.text_channels, id=log_channel_id)
+        log_channel = None
+
+        # Prefer the stored channel ID when present.
+        raw_log_channel_id = self.storage.settings["guilds"].setdefault(guild_id, {}).get("log_channel_id", 0)
+        try:
+            log_channel_id = int(raw_log_channel_id)
+        except (TypeError, ValueError):
+            log_channel_id = 0
+
+        if log_channel_id > 0:
+            existing_channel = guild.get_channel(log_channel_id)
+            if isinstance(existing_channel, discord.TextChannel):
+                log_channel = existing_channel
+
         overwrites = {guild.default_role: self.default_permissions}
         if log_channel in [None, ""]:
             # The log channel doesn't exist so we create it
@@ -181,7 +190,7 @@ class ModerationBot(discord.Client):
             await log_channel.send(
                 "I created this channel for moderation logs. Please edit the channel permissions to allow what users you want to see this channel."
             )
-            self.storage.settings["guilds"][guild_id]["log_channel_id"] = log_channel.id
+            self.storage.settings["guilds"].setdefault(guild_id, {})["log_channel_id"] = log_channel.id
             await self.storage.write_file_to_disk()
 
 
