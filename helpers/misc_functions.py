@@ -50,7 +50,7 @@ def is_valid_duration(duration: int | str) -> bool:
     Returns:
         Boolean: If it is a valid duration
     """
-    if is_integer(duration):
+    if is_integer(str(duration)):
         return int(duration) > 0
     elif duration == "perma":
         return True
