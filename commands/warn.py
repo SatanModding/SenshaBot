@@ -111,7 +111,7 @@ class WarnCommand(Command):
                         await temp_mute_command.execute(message, args=[str(user_id), "24h", "Accrued two warnings"])
                     elif active_warns >= 3 and weight != 0:
                         temp_ban_command = TempBanCommand(self.client)
-                        await temp_ban_command.execute(message, args=[str(user_id), "24h", "Accrued three warnings"])
+                        await temp_ban_command.execute(message, args=[str(user_id), "perma", "Accrued three warnings"])
 
                     log_channel_id = int(self.storage.settings["guilds"][guild_id]["log_channel_id"])
                     log_channel = message.guild.get_channel(log_channel_id)

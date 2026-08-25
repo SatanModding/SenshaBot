@@ -5,7 +5,7 @@ from discord import Member
 from storage_management import StorageManagement
 
 
-def is_integer(string: str) -> bool:
+def is_integer(string) -> bool:
     """Checks if the string is an integer
 
     Args:
@@ -25,7 +25,7 @@ def is_integer(string: str) -> bool:
 is_number = is_integer
 
 
-def is_float(string: str) -> bool:
+def is_float(string) -> bool:
     """Checks if the string is a float
 
     Args:
@@ -41,7 +41,7 @@ def is_float(string: str) -> bool:
         return False
 
 
-def is_valid_duration(duration: Union[int, str]) -> bool:
+def is_valid_duration(duration: int | str) -> bool:
     """Checks if the duration is a positive number
 
     Args:
@@ -51,15 +51,14 @@ def is_valid_duration(duration: Union[int, str]) -> bool:
         Boolean: If it is a valid duration
     """
     if is_integer(duration):
-        if int(duration) > 0:
-            return True
-        else:
-            return False
-    else:
-        return False
+        return int(duration) > 0
+    elif duration == "perma":
+        return True
+
+    return False
 
 
-def parse_duration(string: str) -> int:
+def parse_duration(string: str) -> int | str:
     """Parses a duration in seconds from a duration string
 
     Args:
@@ -70,6 +69,8 @@ def parse_duration(string: str) -> int:
     """
     if is_integer(string):
         return int(string)
+    elif string == "perma":
+        return string
     else:
         values = {"w": 604800, "d": 86400, "h": 3600, "m": 60, "s": 1}
         nums = []
