@@ -13,3 +13,5 @@ python
 python3
 users.json
 test.py
+*.txt.prod
+*.txt.dev
