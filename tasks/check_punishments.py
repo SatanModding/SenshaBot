@@ -42,8 +42,13 @@ async def check_punishments(client):
             bans_to_remove = []
             for user_info in banned_users.items():
                 user_id = int(user_info[0])
-                duration = int(user_info[1]["duration"])
+                duration = user_info[1]["duration"]
                 normal_duration = user_info[1]["normal_duration"]
+                
+                if duration == "perma":
+                    continue
+
+                duration = int(duration)
                 if -1 < duration < int(time.time()):
                     user = await client.fetch_user(user_id)
                     if user is None:

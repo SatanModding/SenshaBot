@@ -10,7 +10,7 @@ from bot import ModerationBot
 from commands.base import Command
 from datetime import datetime
 from commands.mute import timeoutCommand
-from commands.ban import TempBanCommand
+from commands.ban import BanCommand
 from commands.dm import DMCommand
 from helpers.embed_builder import EmbedBuilder
 from helpers.misc_functions import (author_is_mod, is_integer,

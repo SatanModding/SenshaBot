@@ -14,6 +14,7 @@ from helpers.misc_functions import author_is_mod
 from helpers.slurs import slurs
 from helpers.uuid_handle import DataType
 from helpers.uuid_handle_slur_parser import UUIDHandleSlurParser
+from tasks.freedom_to_celsius import TemperatureConverter
 
 
 class MessageEvent(EventHandler):
@@ -24,6 +25,7 @@ class MessageEvent(EventHandler):
         self.chain_length = 5  # Define the minimum length of the chain
         self.emoji_chain_file = "emoji_chain.json"  # JSON file to store emoji chains
         self.uuid_handle = (uuid_handle.uuid_utils(), uuid_handle.handle_utils())
+        self.temperature_converter = TemperatureConverter(client_instance)
 
         # Initialize the emoji chain file if it doesn't exist
         try:
@@ -93,6 +95,8 @@ class MessageEvent(EventHandler):
             if slurs(["cunt"]).check(message.content):
                 await message.reply("oi mate you better hope youre australian!!!")
                 return
+            # for temperature conversion
+            await self.temperature_converter.on_message(message)
 
             # Initialize the emoji chain for this guild and channel
             self.initialize_chain_for_channel(guild_id, channel_id)
