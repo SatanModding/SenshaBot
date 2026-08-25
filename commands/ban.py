@@ -84,7 +84,7 @@ class UnBanCommand(Command):
             )
 
 
-class TempBanCommand(Command):
+class BanCommand(Command):
     def __init__(self, client_instance: ModerationBot) -> None:
         self.cmd = "ban"
         self.client = client_instance

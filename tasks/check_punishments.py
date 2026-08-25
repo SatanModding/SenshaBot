@@ -2,7 +2,6 @@ import asyncio
 import time
 
 from helpers.embed_builder import EmbedBuilder
-from helpers.misc_functions import is_integer
 
 
 async def check_punishments(client):
@@ -46,7 +45,7 @@ async def check_punishments(client):
                 duration = user_info[1]["duration"]
                 normal_duration = user_info[1]["normal_duration"]
                 
-                if duration == "perma" and not is_integer(duration):
+                if duration == "perma":
                     continue
 
                 duration = int(duration)

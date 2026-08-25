@@ -11,7 +11,7 @@ from commands.base import Command
 from datetime import datetime
 from datetime import timedelta
 from commands.mute import timeoutCommand
-from commands.ban import TempBanCommand
+from commands.ban import BanCommand
 from commands.dm import DMCommand
 from helpers.embed_builder import EmbedBuilder
 from helpers.misc_functions import (author_is_mod, is_integer,
@@ -110,8 +110,8 @@ class WarnCommand(Command):
                         temp_mute_command = timeoutCommand(self.client)
                         await temp_mute_command.execute(message, args=[str(user_id), "24h", "Accrued two warnings"])
                     elif active_warns >= 3 and weight != 0:
-                        temp_ban_command = TempBanCommand(self.client)
-                        await temp_ban_command.execute(message, args=[str(user_id), "perma", "Accrued three warnings"])
+                        ban_command = BanCommand(self.client)
+                        await ban_command.execute(message, args=[str(user_id), "perma", "Accrued three warnings"])
 
                     log_channel_id = int(self.storage.settings["guilds"][guild_id]["log_channel_id"])
                     log_channel = message.guild.get_channel(log_channel_id)
