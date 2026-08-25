@@ -5,7 +5,7 @@ from discord import Member
 from storage_management import StorageManagement
 
 
-def is_integer(string) -> bool:
+def is_integer(string: str) -> bool:
     """Checks if the string is an integer
 
     Args:
@@ -25,7 +25,7 @@ def is_integer(string) -> bool:
 is_number = is_integer
 
 
-def is_float(string) -> bool:
+def is_float(string: str) -> bool:
     """Checks if the string is a float
 
     Args:
@@ -66,6 +66,7 @@ def parse_duration(string: str) -> int | str:
 
     Returns:
         int: The time in seconds of the duration string
+        str: In case the ban is permanent
     """
     if is_integer(string):
         return int(string)
